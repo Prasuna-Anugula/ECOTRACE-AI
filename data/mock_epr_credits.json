@@ -1,0 +1,139 @@
+{
+  "producers": [
+    {
+      "producer_id": "PROD-001",
+      "company_name": "Apple India Pvt Ltd",
+      "registration_number": "CPCB-PRD-2021-00101",
+      "annual_target_kg": 50000,
+      "purchased_credits_kg": 32400,
+      "verified_credits_kg": 31850,
+      "deadline": "2026-12-31",
+      "compliance_status": "ON_TRACK",
+      "product_categories": ["Mobile", "Laptop", "Tablet", "Headphones"]
+    },
+    {
+      "producer_id": "PROD-002",
+      "company_name": "Samsung India Electronics Pvt Ltd",
+      "registration_number": "CPCB-PRD-2021-00142",
+      "annual_target_kg": 75000,
+      "purchased_credits_kg": 48200,
+      "verified_credits_kg": 46900,
+      "deadline": "2026-12-31",
+      "compliance_status": "ON_TRACK",
+      "product_categories": ["Mobile", "Television", "Refrigerator", "Washing Machine", "Laptop"]
+    },
+    {
+      "producer_id": "PROD-003",
+      "company_name": "Dell India Pvt Ltd",
+      "registration_number": "CPCB-PRD-2020-00089",
+      "annual_target_kg": 30000,
+      "purchased_credits_kg": 14500,
+      "verified_credits_kg": 14200,
+      "deadline": "2026-12-31",
+      "compliance_status": "AT_RISK",
+      "product_categories": ["Laptop", "Desktop", "Server", "Monitor", "Printer"]
+    }
+  ],
+  "credit_listings": [
+    {
+      "listing_id": "LST-001",
+      "recycler_id": "REC-001",
+      "recycler_name": "GreenCycle Technologies",
+      "item_type": "PCB",
+      "available_kg": 4500,
+      "price_per_kg_inr": 90,
+      "trust_score": 0.942,
+      "min_order_kg": 100
+    },
+    {
+      "listing_id": "LST-002",
+      "recycler_id": "REC-001",
+      "recycler_name": "GreenCycle Technologies",
+      "item_type": "Battery",
+      "available_kg": 3200,
+      "price_per_kg_inr": 120,
+      "trust_score": 0.942,
+      "min_order_kg": 50
+    },
+    {
+      "listing_id": "LST-003",
+      "recycler_id": "REC-001",
+      "recycler_name": "GreenCycle Technologies",
+      "item_type": "Mobile (intact)",
+      "available_kg": 4750,
+      "price_per_kg_inr": 75,
+      "trust_score": 0.942,
+      "min_order_kg": 200
+    },
+    {
+      "listing_id": "LST-004",
+      "recycler_id": "REC-002",
+      "recycler_name": "EcoWaste Solutions",
+      "item_type": "PCB",
+      "available_kg": 7200,
+      "price_per_kg_inr": 82,
+      "trust_score": 0.917,
+      "min_order_kg": 200
+    },
+    {
+      "listing_id": "LST-005",
+      "recycler_id": "REC-002",
+      "recycler_name": "EcoWaste Solutions",
+      "item_type": "Television (intact)",
+      "available_kg": 6800,
+      "price_per_kg_inr": 60,
+      "trust_score": 0.917,
+      "min_order_kg": 500
+    },
+    {
+      "listing_id": "LST-006",
+      "recycler_id": "REC-004",
+      "recycler_name": "SafeRecycle India",
+      "item_type": "Battery",
+      "available_kg": 9800,
+      "price_per_kg_inr": 115,
+      "trust_score": 0.956,
+      "min_order_kg": 100
+    },
+    {
+      "listing_id": "LST-007",
+      "recycler_id": "REC-004",
+      "recycler_name": "SafeRecycle India",
+      "item_type": "PCB",
+      "available_kg": 12400,
+      "price_per_kg_inr": 95,
+      "trust_score": 0.956,
+      "min_order_kg": 200
+    },
+    {
+      "listing_id": "LST-008",
+      "recycler_id": "REC-005",
+      "recycler_name": "QuickRecycle Enterprises",
+      "item_type": "Mixed E-Waste",
+      "available_kg": 28900,
+      "price_per_kg_inr": 45,
+      "trust_score": 0.613,
+      "min_order_kg": 1000
+    },
+    {
+      "listing_id": "LST-009",
+      "recycler_id": "REC-006",
+      "recycler_name": "TerraGreen Recycling",
+      "item_type": "IT Assets (intact)",
+      "available_kg": 8200,
+      "price_per_kg_inr": 80,
+      "trust_score": 0.901,
+      "min_order_kg": 200
+    },
+    {
+      "listing_id": "LST-010",
+      "recycler_id": "REC-006",
+      "recycler_name": "TerraGreen Recycling",
+      "item_type": "PCB",
+      "available_kg": 5400,
+      "price_per_kg_inr": 85,
+      "trust_score": 0.901,
+      "min_order_kg": 100
+    }
+  ]
+}

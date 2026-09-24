@@ -1,0 +1,1 @@
+# EcoTrace AI — pages package

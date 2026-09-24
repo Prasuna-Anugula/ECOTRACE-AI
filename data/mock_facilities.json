@@ -1,0 +1,67 @@
+[
+  {
+    "facility_id": "FAC-001",
+    "name": "GreenCycle Hyderabad",
+    "registration_status": "REGISTERED",
+    "location": "Hyderabad, Telangana",
+    "latitude": 17.385,
+    "longitude": 78.4867,
+    "items_received": 420,
+    "items_processed": 410,
+    "badges_issued": 398,
+    "completion_failures": 12,
+    "anomaly_status": "NORMAL"
+  },
+  {
+    "facility_id": "FAC-002",
+    "name": "EcoRecover Mumbai",
+    "registration_status": "REGISTERED",
+    "location": "Mumbai, Maharashtra",
+    "latitude": 19.076,
+    "longitude": 72.8777,
+    "items_received": 510,
+    "items_processed": 312,
+    "badges_issued": 289,
+    "completion_failures": 198,
+    "anomaly_status": "REVIEW"
+  },
+  {
+    "facility_id": "FAC-003",
+    "name": "TechReclaim Bengaluru",
+    "registration_status": "REGISTERED",
+    "location": "Bengaluru, Karnataka",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "items_received": 187,
+    "items_processed": 182,
+    "badges_issued": 178,
+    "completion_failures": 5,
+    "anomaly_status": "NORMAL"
+  },
+  {
+    "facility_id": "FAC-004",
+    "name": "E-Cycle Chennai",
+    "registration_status": "REGISTERED",
+    "location": "Chennai, Tamil Nadu",
+    "latitude": 13.0827,
+    "longitude": 80.2707,
+    "items_received": 95,
+    "items_processed": 88,
+    "badges_issued": 85,
+    "completion_failures": 7,
+    "anomaly_status": "NORMAL"
+  },
+  {
+    "facility_id": "FAC-005",
+    "name": "WasteTech Delhi",
+    "registration_status": "PROVISIONAL",
+    "location": "New Delhi, Delhi",
+    "latitude": 28.6139,
+    "longitude": 77.2090,
+    "items_received": 72,
+    "items_processed": 41,
+    "badges_issued": 38,
+    "completion_failures": 31,
+    "anomaly_status": "REVIEW"
+  }
+]

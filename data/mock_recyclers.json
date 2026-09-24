@@ -1,0 +1,655 @@
+{
+  "recyclers": [
+    {
+      "recycler_id": "REC-001",
+      "company_name": "GreenCycle Technologies Pvt Ltd",
+      "registration_number": "CPCB-EPR-2022-00451",
+      "registration_valid_until": "2027-03-31",
+      "established_year": 2018,
+      "headquarters": "Hyderabad, Telangana",
+      "website": "www.greencycletech.in",
+      "contact_email": "compliance@greencycletech.in",
+      "trust_score": 0.942,
+      "gate_pass_rate": 0.978,
+      "total_items_verified": 3847,
+      "avg_processing_time_hours": 18,
+      "anomaly_flags": [],
+      "last_audit_date": "2026-09-15",
+      "certifications": ["ISO 14001:2015", "ISO 45001:2018", "CPCB Registered", "EcoTrace Verified"],
+      "available_credits_kg": 12450.5,
+      "price_per_kg_inr": 85,
+      "specialization": "Mobile devices and battery recycling",
+      "facilities": [
+        {
+          "facility_id": "FAC-GC-HYD-01",
+          "facility_name": "GreenCycle Hyderabad — Main Plant",
+          "address": "Plot 45, Industrial Area, Patancheru, Hyderabad - 502319, Telangana",
+          "city": "Hyderabad",
+          "state": "Telangana",
+          "gps_lat": 17.5350,
+          "gps_lon": 78.2645,
+          "is_primary": true,
+          "operational_since": "2018-06-01",
+          "capacity": {
+            "processing_capacity_tons_per_month": 50,
+            "storage_capacity_tons": 120,
+            "daily_throughput_items": 450,
+            "annual_capacity_tons": 600
+          },
+          "footprint": {
+            "total_area_sqm": 8500,
+            "covered_area_sqm": 6200,
+            "open_yard_sqm": 2300,
+            "workforce_total": 42,
+            "workforce_technical": 18,
+            "workforce_supervisory": 6,
+            "shift_count": 2,
+            "energy_source": "Grid + 50 kW Solar",
+            "water_recycling": true,
+            "emission_certificate": "Valid till 2027-06"
+          },
+          "equipment": [
+            "Shredder — 5 ton/hr capacity",
+            "Dismantling stations — 12 workbenches",
+            "Sorting conveyor — 3 lines",
+            "Battery isolation chamber — 500 kg capacity",
+            "PCB depopulation line — semi-automated",
+            "Weighbridge — certified 30 ton",
+            "CCTV monitoring — 48 cameras"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": true,
+            "packaging_accepted": ["Cardboard box", "Pallet wrap", "Bulk bag"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "Screen", "Motherboard", "HDD", "RAM"],
+            "device_types_accepted": ["Mobile", "Laptop", "Tablet", "Television", "Printer", "Router"],
+            "dismantling_rate_items_per_day": 320,
+            "packaging_rate_items_per_day": 450,
+            "hazmat_certified": true,
+            "battery_handling_certified": true
+          },
+          "monthly_stats": {
+            "items_received": 2100,
+            "items_processed": 2058,
+            "items_dismantled": 1240,
+            "items_intact_packaged": 860,
+            "processing_ratio": 0.98,
+            "credits_generated_kg": 4200
+          }
+        },
+        {
+          "facility_id": "FAC-GC-BLR-02",
+          "facility_name": "GreenCycle Bangalore — Secondary Unit",
+          "address": "Survey No. 88, Bommasandra Industrial Area, Bangalore - 560099, Karnataka",
+          "city": "Bangalore",
+          "state": "Karnataka",
+          "gps_lat": 12.8160,
+          "gps_lon": 77.6941,
+          "is_primary": false,
+          "operational_since": "2021-03-15",
+          "capacity": {
+            "processing_capacity_tons_per_month": 20,
+            "storage_capacity_tons": 45,
+            "daily_throughput_items": 180,
+            "annual_capacity_tons": 240
+          },
+          "footprint": {
+            "total_area_sqm": 3200,
+            "covered_area_sqm": 2800,
+            "open_yard_sqm": 400,
+            "workforce_total": 18,
+            "workforce_technical": 8,
+            "workforce_supervisory": 3,
+            "shift_count": 1,
+            "energy_source": "Grid + 20 kW Solar",
+            "water_recycling": true,
+            "emission_certificate": "Valid till 2027-01"
+          },
+          "equipment": [
+            "Manual dismantling stations — 6 workbenches",
+            "Sorting conveyor — 1 line",
+            "Battery storage rack — 200 kg capacity",
+            "Weighbridge — certified 10 ton"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": true,
+            "packaging_accepted": ["Cardboard box", "Bulk bag"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "Screen"],
+            "device_types_accepted": ["Mobile", "Laptop", "Tablet", "Printer"],
+            "dismantling_rate_items_per_day": 120,
+            "packaging_rate_items_per_day": 180,
+            "hazmat_certified": true,
+            "battery_handling_certified": true
+          },
+          "monthly_stats": {
+            "items_received": 900,
+            "items_processed": 882,
+            "items_dismantled": 540,
+            "items_intact_packaged": 360,
+            "processing_ratio": 0.98,
+            "credits_generated_kg": 1650
+          }
+        }
+      ]
+    },
+    {
+      "recycler_id": "REC-002",
+      "company_name": "EcoWaste Solutions Pvt Ltd",
+      "registration_number": "CPCB-EPR-2020-00189",
+      "registration_valid_until": "2026-12-31",
+      "established_year": 2015,
+      "headquarters": "Bangalore, Karnataka",
+      "website": "www.ecowastesolutions.in",
+      "contact_email": "epr@ecowastesolutions.in",
+      "trust_score": 0.917,
+      "gate_pass_rate": 0.945,
+      "total_items_verified": 6120,
+      "avg_processing_time_hours": 24,
+      "anomaly_flags": [],
+      "last_audit_date": "2026-08-20",
+      "certifications": ["ISO 14001:2015", "CPCB Registered", "EcoTrace Verified"],
+      "available_credits_kg": 18900.0,
+      "price_per_kg_inr": 78,
+      "specialization": "Large appliances and IT equipment",
+      "facilities": [
+        {
+          "facility_id": "FAC-EW-BLR-01",
+          "facility_name": "EcoWaste Bangalore — Central Hub",
+          "address": "No. 12, KIADB Industrial Area, Hoskote, Bangalore - 562114, Karnataka",
+          "city": "Bangalore",
+          "state": "Karnataka",
+          "gps_lat": 13.0705,
+          "gps_lon": 77.7978,
+          "is_primary": true,
+          "operational_since": "2015-09-01",
+          "capacity": {
+            "processing_capacity_tons_per_month": 80,
+            "storage_capacity_tons": 200,
+            "daily_throughput_items": 650,
+            "annual_capacity_tons": 960
+          },
+          "footprint": {
+            "total_area_sqm": 14000,
+            "covered_area_sqm": 10500,
+            "open_yard_sqm": 3500,
+            "workforce_total": 75,
+            "workforce_technical": 30,
+            "workforce_supervisory": 10,
+            "shift_count": 3,
+            "energy_source": "Grid + 100 kW Solar + Wind",
+            "water_recycling": true,
+            "emission_certificate": "Valid till 2027-09"
+          },
+          "equipment": [
+            "Heavy shredder — 15 ton/hr",
+            "Dismantling stations — 24 workbenches",
+            "Automated sorting conveyor — 5 lines",
+            "Battery isolation bay — 2000 kg capacity",
+            "CRT glass separator",
+            "Precious metal recovery unit",
+            "Weighbridge — certified 50 ton",
+            "ERP-integrated tracking system"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": true,
+            "packaging_accepted": ["Cardboard box", "Pallet wrap", "Bulk bag", "Loose"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "Screen", "Motherboard", "HDD", "RAM", "Power Supply", "CRT"],
+            "device_types_accepted": ["Mobile", "Laptop", "Desktop", "Television", "Refrigerator", "Washing Machine", "Microwave", "Printer"],
+            "dismantling_rate_items_per_day": 480,
+            "packaging_rate_items_per_day": 650,
+            "hazmat_certified": true,
+            "battery_handling_certified": true
+          },
+          "monthly_stats": {
+            "items_received": 3200,
+            "items_processed": 3024,
+            "items_dismantled": 1920,
+            "items_intact_packaged": 1280,
+            "processing_ratio": 0.945,
+            "credits_generated_kg": 7200
+          }
+        },
+        {
+          "facility_id": "FAC-EW-CHN-02",
+          "facility_name": "EcoWaste Chennai — South Unit",
+          "address": "Plot 78, Ambattur Industrial Estate, Chennai - 600058, Tamil Nadu",
+          "city": "Chennai",
+          "state": "Tamil Nadu",
+          "gps_lat": 13.1143,
+          "gps_lon": 80.1548,
+          "is_primary": false,
+          "operational_since": "2019-11-01",
+          "capacity": {
+            "processing_capacity_tons_per_month": 35,
+            "storage_capacity_tons": 80,
+            "daily_throughput_items": 280,
+            "annual_capacity_tons": 420
+          },
+          "footprint": {
+            "total_area_sqm": 5500,
+            "covered_area_sqm": 4200,
+            "open_yard_sqm": 1300,
+            "workforce_total": 32,
+            "workforce_technical": 14,
+            "workforce_supervisory": 4,
+            "shift_count": 2,
+            "energy_source": "Grid + 30 kW Solar",
+            "water_recycling": false,
+            "emission_certificate": "Valid till 2026-12"
+          },
+          "equipment": [
+            "Medium shredder — 5 ton/hr",
+            "Dismantling stations — 10 workbenches",
+            "Sorting conveyor — 2 lines",
+            "Battery storage — 600 kg capacity",
+            "Weighbridge — certified 20 ton"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": false,
+            "packaging_accepted": ["Cardboard box", "Bulk bag"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "Screen"],
+            "device_types_accepted": ["Mobile", "Laptop", "Television", "Printer"],
+            "dismantling_rate_items_per_day": 0,
+            "packaging_rate_items_per_day": 280,
+            "hazmat_certified": true,
+            "battery_handling_certified": false
+          },
+          "monthly_stats": {
+            "items_received": 1400,
+            "items_processed": 1288,
+            "items_dismantled": 550,
+            "items_intact_packaged": 850,
+            "processing_ratio": 0.92,
+            "credits_generated_kg": 2800
+          }
+        }
+      ]
+    },
+    {
+      "recycler_id": "REC-003",
+      "company_name": "CleanTech Recyclers Pvt Ltd",
+      "registration_number": "CPCB-EPR-2021-00334",
+      "registration_valid_until": "2026-09-30",
+      "established_year": 2019,
+      "headquarters": "Mumbai, Maharashtra",
+      "website": "www.cleantechrecyclers.in",
+      "contact_email": "info@cleantechrecyclers.in",
+      "trust_score": 0.873,
+      "gate_pass_rate": 0.892,
+      "total_items_verified": 2340,
+      "avg_processing_time_hours": 36,
+      "anomaly_flags": ["Registration expiring in 8 days"],
+      "last_audit_date": "2026-07-10",
+      "certifications": ["ISO 14001:2015", "CPCB Registered"],
+      "available_credits_kg": 7800.0,
+      "price_per_kg_inr": 72,
+      "specialization": "IT equipment and peripherals",
+      "facilities": [
+        {
+          "facility_id": "FAC-CT-MUM-01",
+          "facility_name": "CleanTech Mumbai — Processing Centre",
+          "address": "Unit 5, Taloja MIDC, Navi Mumbai - 410208, Maharashtra",
+          "city": "Mumbai",
+          "state": "Maharashtra",
+          "gps_lat": 19.0330,
+          "gps_lon": 73.1268,
+          "is_primary": true,
+          "operational_since": "2019-04-01",
+          "capacity": {
+            "processing_capacity_tons_per_month": 30,
+            "storage_capacity_tons": 70,
+            "daily_throughput_items": 250,
+            "annual_capacity_tons": 360
+          },
+          "footprint": {
+            "total_area_sqm": 4800,
+            "covered_area_sqm": 3800,
+            "open_yard_sqm": 1000,
+            "workforce_total": 28,
+            "workforce_technical": 12,
+            "workforce_supervisory": 4,
+            "shift_count": 2,
+            "energy_source": "Grid only",
+            "water_recycling": false,
+            "emission_certificate": "Valid till 2026-11"
+          },
+          "equipment": [
+            "Shredder — 3 ton/hr",
+            "Dismantling stations — 8 workbenches",
+            "Sorting conveyor — 2 lines",
+            "Battery storage — 300 kg capacity",
+            "Weighbridge — certified 15 ton"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": true,
+            "packaging_accepted": ["Cardboard box", "Pallet wrap"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "Motherboard"],
+            "device_types_accepted": ["Mobile", "Laptop", "Desktop", "Printer", "Router"],
+            "dismantling_rate_items_per_day": 160,
+            "packaging_rate_items_per_day": 250,
+            "hazmat_certified": true,
+            "battery_handling_certified": true
+          },
+          "monthly_stats": {
+            "items_received": 1100,
+            "items_processed": 981,
+            "items_dismantled": 620,
+            "items_intact_packaged": 480,
+            "processing_ratio": 0.892,
+            "credits_generated_kg": 2100
+          }
+        }
+      ]
+    },
+    {
+      "recycler_id": "REC-004",
+      "company_name": "SafeRecycle India Pvt Ltd",
+      "registration_number": "CPCB-EPR-2019-00098",
+      "registration_valid_until": "2027-06-30",
+      "established_year": 2014,
+      "headquarters": "Pune, Maharashtra",
+      "website": "www.saferecycleindia.in",
+      "contact_email": "epr@saferecycleindia.in",
+      "trust_score": 0.956,
+      "gate_pass_rate": 0.981,
+      "total_items_verified": 9240,
+      "avg_processing_time_hours": 14,
+      "anomaly_flags": [],
+      "last_audit_date": "2026-09-01",
+      "certifications": ["ISO 14001:2015", "ISO 9001:2015", "ISO 45001:2018", "CPCB Registered", "EcoTrace Verified", "BIS Certified"],
+      "available_credits_kg": 31200.0,
+      "price_per_kg_inr": 92,
+      "specialization": "Full-spectrum e-waste — highest rated facility in India",
+      "facilities": [
+        {
+          "facility_id": "FAC-SR-PUN-01",
+          "facility_name": "SafeRecycle Pune — Flagship Plant",
+          "address": "Gat No. 234, Ranjangaon MIDC, Pune - 412220, Maharashtra",
+          "city": "Pune",
+          "state": "Maharashtra",
+          "gps_lat": 18.7367,
+          "gps_lon": 74.1580,
+          "is_primary": true,
+          "operational_since": "2014-01-15",
+          "capacity": {
+            "processing_capacity_tons_per_month": 150,
+            "storage_capacity_tons": 400,
+            "daily_throughput_items": 1200,
+            "annual_capacity_tons": 1800
+          },
+          "footprint": {
+            "total_area_sqm": 28000,
+            "covered_area_sqm": 21000,
+            "open_yard_sqm": 7000,
+            "workforce_total": 160,
+            "workforce_technical": 65,
+            "workforce_supervisory": 22,
+            "shift_count": 3,
+            "energy_source": "Grid + 200 kW Solar + 50 kW Wind",
+            "water_recycling": true,
+            "emission_certificate": "Valid till 2028-06"
+          },
+          "equipment": [
+            "Industrial shredder — 25 ton/hr",
+            "Automated dismantling line — 3 robotic arms",
+            "Dismantling stations — 40 workbenches",
+            "Automated sorting conveyor — 8 lines",
+            "Battery isolation bay — 5000 kg capacity",
+            "PCB precious metal recovery — automated",
+            "CRT glass & LED screen separator",
+            "X-ray fluorescence analyser",
+            "Weighbridge — certified 80 ton",
+            "Fully integrated ERP + IoT tracking"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": true,
+            "packaging_accepted": ["Cardboard box", "Pallet wrap", "Bulk bag", "Loose", "Containerized"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "Screen", "Motherboard", "HDD", "RAM", "Power Supply", "CRT", "LCD", "CPU", "GPU"],
+            "device_types_accepted": ["Mobile", "Laptop", "Desktop", "Television", "Refrigerator", "Washing Machine", "Microwave", "Printer", "Server", "UPS", "Router", "Camera"],
+            "dismantling_rate_items_per_day": 900,
+            "packaging_rate_items_per_day": 1200,
+            "hazmat_certified": true,
+            "battery_handling_certified": true
+          },
+          "monthly_stats": {
+            "items_received": 5800,
+            "items_processed": 5690,
+            "items_dismantled": 3480,
+            "items_intact_packaged": 2320,
+            "processing_ratio": 0.981,
+            "credits_generated_kg": 14500
+          }
+        },
+        {
+          "facility_id": "FAC-SR-DEL-02",
+          "facility_name": "SafeRecycle Delhi — North Hub",
+          "address": "Plot 18, Sector 24, Faridabad Industrial Area, Haryana - 121005",
+          "city": "Faridabad",
+          "state": "Haryana",
+          "gps_lat": 28.4089,
+          "gps_lon": 77.3178,
+          "is_primary": false,
+          "operational_since": "2020-07-01",
+          "capacity": {
+            "processing_capacity_tons_per_month": 60,
+            "storage_capacity_tons": 150,
+            "daily_throughput_items": 480,
+            "annual_capacity_tons": 720
+          },
+          "footprint": {
+            "total_area_sqm": 11000,
+            "covered_area_sqm": 8500,
+            "open_yard_sqm": 2500,
+            "workforce_total": 55,
+            "workforce_technical": 24,
+            "workforce_supervisory": 8,
+            "shift_count": 2,
+            "energy_source": "Grid + 80 kW Solar",
+            "water_recycling": true,
+            "emission_certificate": "Valid till 2027-07"
+          },
+          "equipment": [
+            "Shredder — 8 ton/hr",
+            "Dismantling stations — 18 workbenches",
+            "Sorting conveyor — 4 lines",
+            "Battery isolation bay — 1500 kg capacity",
+            "PCB manual sorting line",
+            "Weighbridge — certified 40 ton"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": true,
+            "packaging_accepted": ["Cardboard box", "Pallet wrap", "Bulk bag"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "Screen", "Motherboard", "HDD", "RAM"],
+            "device_types_accepted": ["Mobile", "Laptop", "Desktop", "Television", "Printer", "Server"],
+            "dismantling_rate_items_per_day": 340,
+            "packaging_rate_items_per_day": 480,
+            "hazmat_certified": true,
+            "battery_handling_certified": true
+          },
+          "monthly_stats": {
+            "items_received": 2400,
+            "items_processed": 2354,
+            "items_dismantled": 1440,
+            "items_intact_packaged": 960,
+            "processing_ratio": 0.981,
+            "credits_generated_kg": 5800
+          }
+        }
+      ]
+    },
+    {
+      "recycler_id": "REC-005",
+      "company_name": "QuickRecycle Enterprises Ltd",
+      "registration_number": "CPCB-EPR-2023-00712",
+      "registration_valid_until": "2026-11-30",
+      "established_year": 2021,
+      "headquarters": "Delhi, NCR",
+      "website": "www.quickrecycle.in",
+      "contact_email": "ops@quickrecycle.in",
+      "trust_score": 0.613,
+      "gate_pass_rate": 0.542,
+      "total_items_verified": 1245,
+      "avg_processing_time_hours": 68,
+      "anomaly_flags": [
+        "Badge overflow: 112% (more badges than items received)",
+        "High late submission rate: 43% outside 72hr window",
+        "3 failed audits in Q2 2026",
+        "GPS coordinates mismatch on 18% of records"
+      ],
+      "last_audit_date": "2026-06-14",
+      "certifications": ["CPCB Registered"],
+      "available_credits_kg": 28900.0,
+      "price_per_kg_inr": 45,
+      "specialization": "General e-waste (unspecified)",
+      "facilities": [
+        {
+          "facility_id": "FAC-QR-DEL-01",
+          "facility_name": "QuickRecycle Delhi — Collection Point",
+          "address": "Shed 3, Mayapuri Industrial Area Phase 2, Delhi - 110064",
+          "city": "Delhi",
+          "state": "Delhi NCR",
+          "gps_lat": 28.6380,
+          "gps_lon": 77.1025,
+          "is_primary": true,
+          "operational_since": "2021-08-01",
+          "capacity": {
+            "processing_capacity_tons_per_month": 25,
+            "storage_capacity_tons": 60,
+            "daily_throughput_items": 200,
+            "annual_capacity_tons": 300
+          },
+          "footprint": {
+            "total_area_sqm": 1800,
+            "covered_area_sqm": 1400,
+            "open_yard_sqm": 400,
+            "workforce_total": 12,
+            "workforce_technical": 3,
+            "workforce_supervisory": 2,
+            "shift_count": 1,
+            "energy_source": "Grid only",
+            "water_recycling": false,
+            "emission_certificate": "Expired 2026-03"
+          },
+          "equipment": [
+            "Manual dismantling — 3 workbenches",
+            "Basic sorting area",
+            "Platform weighing scale"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": false,
+            "packaging_accepted": ["Loose", "Cardboard box"],
+            "component_types_accepted": ["PCB", "Battery", "Casing"],
+            "device_types_accepted": ["Mobile", "Laptop"],
+            "dismantling_rate_items_per_day": 0,
+            "packaging_rate_items_per_day": 200,
+            "hazmat_certified": false,
+            "battery_handling_certified": false
+          },
+          "monthly_stats": {
+            "items_received": 850,
+            "items_processed": 461,
+            "items_dismantled": 120,
+            "items_intact_packaged": 730,
+            "processing_ratio": 0.542,
+            "credits_generated_kg": 920
+          }
+        }
+      ]
+    },
+    {
+      "recycler_id": "REC-006",
+      "company_name": "TerraGreen Recycling Pvt Ltd",
+      "registration_number": "CPCB-EPR-2020-00276",
+      "registration_valid_until": "2027-01-31",
+      "established_year": 2017,
+      "headquarters": "Ahmedabad, Gujarat",
+      "website": "www.terragreen.in",
+      "contact_email": "compliance@terragreen.in",
+      "trust_score": 0.901,
+      "gate_pass_rate": 0.933,
+      "total_items_verified": 4580,
+      "avg_processing_time_hours": 22,
+      "anomaly_flags": [],
+      "last_audit_date": "2026-09-08",
+      "certifications": ["ISO 14001:2015", "ISO 9001:2015", "CPCB Registered", "EcoTrace Verified"],
+      "available_credits_kg": 15600.0,
+      "price_per_kg_inr": 80,
+      "specialization": "IT assets and telecom equipment",
+      "facilities": [
+        {
+          "facility_id": "FAC-TG-AHM-01",
+          "facility_name": "TerraGreen Ahmedabad — IT Asset Hub",
+          "address": "Plot 112, Vatva GIDC, Ahmedabad - 382445, Gujarat",
+          "city": "Ahmedabad",
+          "state": "Gujarat",
+          "gps_lat": 22.9716,
+          "gps_lon": 72.6456,
+          "is_primary": true,
+          "operational_since": "2017-03-01",
+          "capacity": {
+            "processing_capacity_tons_per_month": 65,
+            "storage_capacity_tons": 160,
+            "daily_throughput_items": 520,
+            "annual_capacity_tons": 780
+          },
+          "footprint": {
+            "total_area_sqm": 10500,
+            "covered_area_sqm": 8000,
+            "open_yard_sqm": 2500,
+            "workforce_total": 58,
+            "workforce_technical": 25,
+            "workforce_supervisory": 8,
+            "shift_count": 2,
+            "energy_source": "Grid + 75 kW Solar",
+            "water_recycling": true,
+            "emission_certificate": "Valid till 2027-03"
+          },
+          "equipment": [
+            "Shredder — 8 ton/hr",
+            "Data destruction unit — certified NIST 800-88",
+            "Dismantling stations — 20 workbenches",
+            "Sorting conveyor — 4 lines",
+            "Battery isolation bay — 1200 kg capacity",
+            "Weighbridge — certified 30 ton",
+            "Asset tracking software — ERP integrated"
+          ],
+          "item_handling": {
+            "accepts_dismantled": true,
+            "accepts_intact_packaged": true,
+            "dismantling_in_house": true,
+            "packaging_accepted": ["Cardboard box", "Pallet wrap", "Bulk bag", "Secure lockbox"],
+            "component_types_accepted": ["PCB", "Battery", "Casing", "Cable", "HDD", "RAM", "Motherboard", "Power Supply"],
+            "device_types_accepted": ["Mobile", "Laptop", "Desktop", "Server", "Router", "Switch", "UPS", "Telecom Equipment"],
+            "dismantling_rate_items_per_day": 380,
+            "packaging_rate_items_per_day": 520,
+            "hazmat_certified": true,
+            "battery_handling_certified": true
+          },
+          "monthly_stats": {
+            "items_received": 2600,
+            "items_processed": 2426,
+            "items_dismantled": 1560,
+            "items_intact_packaged": 1040,
+            "processing_ratio": 0.933,
+            "credits_generated_kg": 5900
+          }
+        }
+      ]
+    }
+  ]
+}

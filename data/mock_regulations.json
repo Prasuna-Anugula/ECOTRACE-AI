@@ -1,0 +1,32 @@
+{
+  "regulations": [
+    {
+      "id": "REG-EWASTE-2016",
+      "title": "E-Waste Management Rules 2016 (India)",
+      "version": "2016.1",
+      "applicable_items": ["PCB", "Battery", "Casing", "Cable", "intact_device"],
+      "processing_time_window_hours": 72,
+      "minimum_trust_score": 0.80,
+      "requires_facility_registration": true,
+      "requires_gps_evidence": true,
+      "requires_image_evidence": true,
+      "requires_weight_record": true,
+      "notes": "Mock regulatory reference for prototype validation only."
+    },
+    {
+      "id": "REG-EWASTE-2022",
+      "title": "E-Waste Management Rules Amendment 2022 (India)",
+      "version": "2022.1",
+      "applicable_items": ["PCB", "Battery", "Casing", "Cable", "intact_device"],
+      "processing_time_window_hours": 48,
+      "minimum_trust_score": 0.85,
+      "requires_facility_registration": true,
+      "requires_gps_evidence": true,
+      "requires_image_evidence": true,
+      "requires_weight_record": true,
+      "notes": "Updated rules with stricter thresholds. Mock regulatory reference."
+    }
+  ],
+  "active_regulation": "REG-EWASTE-2016",
+  "prototype_note": "All regulatory references are synthetic examples for architecture demonstration only."
+}
