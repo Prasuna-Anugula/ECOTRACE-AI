@@ -126,10 +126,12 @@ def render_architecture() -> None:
     ], "#2563eb", "#eff6ff")
     _ml_card(ml3, "Target Architecture", [
         "Fine-tuned OCR on e-waste label dataset",
-        "Component classifier: PCB / Battery / Casing / Cable",
+        "Component classifier: PCB / Battery / Keyboard / Mouse",
         "LLM + RAG for regulatory-grounded narration",
         "Trained anomaly detection on facility patterns",
     ], "#16a34a", "#f0fdf4")
+
+    render_limitations()
 
 
 # ── Sub-renderers ─────────────────────────────────────────────────────────────
@@ -269,3 +271,146 @@ def _ml_card(col, title: str, points: list[str], colour: str, bg: str) -> None:
         f'</div>',
         unsafe_allow_html=True,
     )
+
+
+def render_limitations() -> None:
+    """
+    Standalone section rendering all known loopholes and their mitigations.
+    Called at the bottom of render_architecture().
+    """
+    st.markdown("---")
+    st.markdown(
+        '<p style="font-size:11px;font-weight:600;color:#6b7280;'
+        'letter-spacing:0.08em;text-transform:uppercase;margin:0 0 12px 0;">'
+        'KNOWN LIMITATIONS &amp; MITIGATIONS</p>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div style="background:#fffbeb;border:1px solid #fde68a;'
+        'border-left:4px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-bottom:16px;">'
+        '<p style="font-size:12px;font-weight:700;color:#92400e;margin:0 0 4px 0;">'
+        'Academic Honesty Notice</p>'
+        '<p style="font-size:11px;color:#78350f;line-height:1.7;margin:0;">'
+        'EcoTrace is a functional prototype. The limitations below are acknowledged gaps '
+        'between the prototype and a production-grade system. Each has a documented '
+        'mitigation strategy. Panels are encouraged to ask about any of these.</p>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    limitations = [
+        {
+            "id": "L1",
+            "title": "Evidence submitted by recycler — GPS/photo integrity",
+            "problem": "GPS spoofing apps, reused stock photos, and edited images are easy to produce. The recycler controls all evidence submission.",
+            "mitigation": "In-app live capture only (no gallery uploads). EXIF metadata check (timestamp + GPS embedded at capture). pHash duplicate detection (same photo across submissions = instant flag). Geofence enforcement (GPS must fall within registered facility zone).",
+            "status": "Production",
+            "colour": "#d97706",
+        },
+        {
+            "id": "L2",
+            "title": "Hard veto rules (implemented in v0.2)",
+            "problem": "Previously: a spoofed GPS could be hidden by a high OCR score in the weighted sum.",
+            "mitigation": "VETO_FACILITY_MIN=0.50 and VETO_GPS_MIN=0.30 now applied BEFORE the weighted sum. Score is set to 0.0 regardless of other metrics if either veto fires. See trust_score.py.",
+            "status": "Implemented",
+            "colour": "#16a34a",
+        },
+        {
+            "id": "L3",
+            "title": "Stage 7 processing proof — photo is fakeable",
+            "problem": "A photo of 'destruction' is trivially fakeable. Yes/no completion flag is insufficient.",
+            "mitigation": "Mass balance check added: declared output weight must be ≥ 60% of input weight. In production: downstream smelter/recycler invoices must reconcile with input weight (copper, PCB, plastic yields). See processing_gate.py.",
+            "status": "Partial (implemented in prototype)",
+            "colour": "#d97706",
+        },
+        {
+            "id": "L4",
+            "title": "Cross-platform serial double-claiming",
+            "problem": "Same device submitted at EcoTrace AND another platform → two EPR credits for one device.",
+            "mitigation": "EcoTrace serial hashes are SHA-256 format, registry-compatible. When a national IMEI hash registry exists (CPCB or delegated body), the uniqueness check swaps from local DB to registry API — no architecture changes needed. Stated as a known limitation.",
+            "status": "Future work",
+            "colour": "#6b7280",
+        },
+        {
+            "id": "L5",
+            "title": "Ghost facilities — registration ≠ operational capacity",
+            "problem": "A facility can be CPCB-registered with minimal infrastructure. Registration alone does not verify operational capacity.",
+            "mitigation": "Rule 4 in anomaly_detection.py: daily_items_submitted / declared_daily_capacity > 1.20 triggers a ghost facility flag. Production: cross-reference with electricity meter data and equipment inspection records.",
+            "status": "Implemented (Rule 4)",
+            "colour": "#16a34a",
+        },
+        {
+            "id": "L6",
+            "title": "Picker–facility collusion",
+            "problem": "Ghost pickers or inflated volumes — facility registers fake pickers and submits ghost collections.",
+            "mitigation": "Rule 5 in anomaly_detection.py: per-picker volume > 3× median daily volume is flagged. Production: picker–facility network graph (facility where 90%+ of submissions come from 2 pickers who are employees = collusion signal).",
+            "status": "Implemented (Rule 5)",
+            "colour": "#16a34a",
+        },
+        {
+            "id": "L7",
+            "title": "Narration circular scoring (fixed in v0.2)",
+            "problem": "Previously: soft scores were derived from trust_score, making narration confidence circular.",
+            "mitigation": "Narration now generated from verified facts only. Soft scores measure structural properties (all fields present, cross-field consistency, chronological order) — not derived from trust_score. LLM role is phrasing only. See narration.py.",
+            "status": "Implemented",
+            "colour": "#16a34a",
+        },
+        {
+            "id": "L8",
+            "title": "Arbitrary thresholds",
+            "problem": "0.80 / 0.55 / 72hr — a panel will ask where these came from.",
+            "mitigation": "Initialised from domain expert heuristics (see config.py comments). Production: calibrated from precision/recall curve on labelled fraud dataset. Higher recall weight on REJECTED class — missing fraud costs more than a false HITL flag.",
+            "status": "Documented in config.py",
+            "colour": "#2563eb",
+        },
+        {
+            "id": "L9",
+            "title": "Synthetic data — circular evaluation",
+            "problem": "Fraud cases in test data generated with same rules as detector → circular validation.",
+            "mitigation": "Adversarial fraud generation required for production evaluation: fraud cases designed to fool the current system (high GPS + good OCR + impossible mass balance). Confirmed fraud labels from CPCB investigations needed for ground-truth validation.",
+            "status": "Production requirement",
+            "colour": "#6b7280",
+        },
+        {
+            "id": "L10",
+            "title": "EPR Certificate terminology (fixed in v0.2)",
+            "problem": "Only CPCB can legally issue EPR certificates. EcoTrace calling outputs 'EPR certificates' is legally incorrect.",
+            "mitigation": "Renamed throughout to 'Evidence Attestation' (EA). EcoTrace issues an EA — a cryptographically signed record supporting CPCB filing. Producers submit EAs as supporting evidence. Does not constitute an EPR certificate.",
+            "status": "Implemented",
+            "colour": "#16a34a",
+        },
+        {
+            "id": "L11",
+            "title": "Privacy — GPS and IMEI are personal data (DPDP Act 2023)",
+            "problem": "Picker GPS tracks and device IMEIs are personal data. Storing in plaintext violates DPDP Act 2023.",
+            "mitigation": "IMEI pseudonymised via SHA-256 hash immediately after OCR. Raw value discarded. Only masked hash stored and displayed. GPS abstracted to facility-zone flag in production. Picker IDs pseudonymised. Explicit consent at picker registration.",
+            "status": "Implemented in mock_ocr.py",
+            "colour": "#16a34a",
+        },
+    ]
+
+    for lim in limitations:
+        status_colour = lim["colour"]
+        st.markdown(
+            f'<div style="border:1px solid #e5e7eb;border-left:3px solid {status_colour};'
+            f'border-radius:8px;padding:12px 14px;margin-bottom:8px;">'
+            f'<table style="width:100%;border-collapse:collapse;">'
+            f'<tr>'
+            f'<td style="vertical-align:top;width:36px;">'
+            f'<span style="font-size:10px;font-weight:800;color:{status_colour};'
+            f'background:{status_colour}18;border-radius:4px;padding:2px 6px;">'
+            f'{lim["id"]}</span></td>'
+            f'<td style="vertical-align:top;padding-left:10px;">'
+            f'<div style="font-size:12px;font-weight:700;color:#111827;margin-bottom:4px;">'
+            f'{lim["title"]}</div>'
+            f'<div style="font-size:11px;color:#6b7280;margin-bottom:4px;">'
+            f'<strong>Problem:</strong> {lim["problem"]}</div>'
+            f'<div style="font-size:11px;color:#374151;margin-bottom:4px;">'
+            f'<strong>Mitigation:</strong> {lim["mitigation"]}</div>'
+            f'<span style="font-size:10px;font-weight:700;color:{status_colour};'
+            f'background:{status_colour}18;border-radius:4px;padding:1px 7px;">'
+            f'{lim["status"]}</span>'
+            f'</td></tr></table>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )

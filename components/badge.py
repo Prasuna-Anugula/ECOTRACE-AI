@@ -1,11 +1,25 @@
 """
-EcoTrace AI — Trust Badge Component (Stage 10)
+EcoTrace AI — Evidence Attestation Badge Component (Stage 10)
+──────────────────────────────────────────────────────────────
+Renders the EcoTrace Evidence Attestation (EA) decision.
+
+TERMINOLOGY (Fix #10):
+  "EPR Certificate" → "Evidence Attestation"
+
+  EcoTrace issues an Evidence Attestation — a cryptographically signed
+  record documenting that a specific item passed all 12 verification stages.
+  This attestation SUPPORTS (but does not replace) the EPR certificate
+  issued by CPCB. Only CPCB can legally issue EPR certificates.
+  Producers submit EcoTrace attestations as supporting evidence for
+  their CPCB filings.
+
 RULE: No display:grid/flex. No split divs. Every st.markdown is self-contained.
 Uses native st.columns for multi-column layout.
 """
 
 from __future__ import annotations
 import streamlit as st
+from config import ATTESTATION_LABEL, ATTESTATION_LABEL_SHORT
 
 
 def render_trust_badge(
@@ -24,26 +38,29 @@ def render_trust_badge(
         border_col = "#16a34a"
         bg_col     = "#f0fdf4"
         title_col  = "#166534"
-        badge_text = "ECOTRACE VERIFIED"
-        sub_text   = "TRUST BADGE — AUTO-ISSUED"
+        badge_text = f"ECOTRACE {ATTESTATION_LABEL_SHORT} — VERIFIED"
+        sub_text   = f"{ATTESTATION_LABEL.upper()} — AUTO-ISSUED"
         icon       = "✓"
-        note       = ""
+        note       = (
+            f"This {ATTESTATION_LABEL} supports CPCB EPR certificate filing. "
+            f"It does not constitute an EPR certificate issued by CPCB."
+        )
     elif "HITL" in bs:
         border_col = "#d97706"
         bg_col     = "#fffbeb"
         title_col  = "#92400e"
-        badge_text = "ECOTRACE — PENDING REVIEW"
-        sub_text   = "TRUST BADGE — HELD FOR HITL REVIEW"
+        badge_text = f"ECOTRACE {ATTESTATION_LABEL_SHORT} — PENDING REVIEW"
+        sub_text   = f"{ATTESTATION_LABEL.upper()} — HELD FOR HITL REVIEW"
         icon       = "⏸"
-        note       = "A human reviewer must verify this record before the badge is issued."
+        note       = f"A human reviewer must verify this record before the {ATTESTATION_LABEL} is issued."
     else:
         border_col = "#dc2626"
         bg_col     = "#fef2f2"
         title_col  = "#991b1b"
-        badge_text = "ECOTRACE — BADGE NOT ISSUED"
+        badge_text = f"ECOTRACE {ATTESTATION_LABEL_SHORT} — NOT ISSUED"
         sub_text   = f"STATUS: {badge_status}"
         icon       = "✕"
-        note       = "Evidence or processing conditions were not met. Badge cannot be issued."
+        note       = f"Evidence or processing conditions were not met. {ATTESTATION_LABEL} cannot be issued."
 
     narr_display = f"{narration_confidence:.3f}" if narration_confidence is not None else "N/A"
 
@@ -83,13 +100,22 @@ def render_trust_badge(
     _id_cell(id2, "Facility",           facility_name)
     _id_cell(id3, "Component / Serial", component_or_serial)
 
-    # ── Note (if any) ─────────────────────────────────────────────────────
+    # ── Note ──────────────────────────────────────────────────────────────
     if note:
         st.markdown(
             f'<p style="font-size:11px;color:{border_col};font-weight:500;margin:10px 0 0 0;">'
             f'{note}</p>',
             unsafe_allow_html=True,
         )
+
+    # ── Legal disclaimer ──────────────────────────────────────────────────
+    st.markdown(
+        f'<p style="font-size:10px;color:#9ca3af;margin:8px 0 0 0;">'
+        f'EcoTrace {ATTESTATION_LABEL}s are supporting evidence for CPCB filings. '
+        f'Only CPCB can legally issue EPR certificates under E-Waste Management Rules 2022.'
+        f'</p>',
+        unsafe_allow_html=True,
+    )
 
 
 def _score_cell(col, label: str, value: str, colour: str, bg: str) -> None:

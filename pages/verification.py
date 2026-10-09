@@ -204,6 +204,13 @@ def _render_ocr_result() -> None:
         'Prototype OCR — mocked output. No real OCR model applied.</div>',
         unsafe_allow_html=True,
     )
+    st.markdown(
+        '<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;'
+        'padding:7px 12px;font-size:11px;color:#0369a1;margin-top:6px;">'
+        'Privacy: Raw serial pseudonymised via SHA-256. '
+        'Only the masked hash is stored. DPDP Act 2023 compliant.</div>',
+        unsafe_allow_html=True,
+    )
     st.markdown("")
 
     uploaded = st.file_uploader("Upload Device Image (optional)", type=["jpg","jpeg","png"], key="ocr_image")
@@ -211,9 +218,10 @@ def _render_ocr_result() -> None:
         st.image(uploaded, width=200)
 
     c1, c2, c3 = st.columns(3)
-    _metric_cell(c1, "Serial / IMEI",    ocr["serial"])
-    _metric_cell(c2, "OCR Confidence",   f"{int(ocr['confidence']*100)}%")
-    _metric_cell(c3, "Serial Uniqueness",f"{int(ocr['serial_uniqueness']*100)}%")
+    _metric_cell(c1, "Masked Serial (EA hash)", ocr["serial_display"])
+    _metric_cell(c2, "OCR Confidence",          f"{int(ocr['confidence']*100)}%")
+    _metric_cell(c3, "Serial Uniqueness",        f"{int(ocr['serial_uniqueness']*100)}%")
+    st.caption(ocr["cross_platform_note"])
 
 
 def _render_cv_result() -> None:
@@ -278,6 +286,19 @@ def _render_stages_4_5() -> None:
 def _render_stage_6() -> None:
     score_result = st.session_state.get("score_result")
     if score_result:
+        # Show veto banner if a hard veto fired
+        if score_result.vetoed:
+            st.markdown(
+                f'<div style="background:#fef2f2;border:1.5px solid #fca5a5;'
+                f'border-left:4px solid #dc2626;border-radius:8px;padding:14px 16px;'
+                f'margin-bottom:10px;">'
+                f'<p style="font-size:13px;font-weight:700;color:#991b1b;margin:0 0 4px 0;">'
+                f'Hard Veto Triggered — Score set to 0.0</p>'
+                f'<p style="font-size:12px;color:#b91c1c;margin:0;">'
+                f'{score_result.veto_reason}</p>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
         render_score_card(score_result)
 
 

@@ -9,6 +9,26 @@ Two modes:
 
 The weighting mode is fixed at Stage 2 and cannot be changed later.
 Scores are calculated purely from input values; no hardcoding of results.
+
+HARD VETO RULES (applied before weighted sum):
+  - facility_validity < VETO_FACILITY_MIN  → REJECTED outright (score = 0.0)
+  - gps_validity      < VETO_GPS_MIN       → REJECTED outright (score = 0.0)
+
+Rationale: A fraudulent or unregistered facility is a disqualifying condition
+regardless of how strong other evidence is. Similarly, invalid GPS cannot be
+compensated by a high OCR score. These are binary compliance requirements,
+not sliding-scale evidence quality indicators.
+
+Weight justification:
+  Weights were initialised using domain expert heuristics:
+    - OCR/CV confidence carries 30% because it is the primary identity signal.
+    - Facility validity carries 20% because it is the primary compliance signal.
+    - GPS, serial uniqueness each carry 15% as corroborating spatial/identity checks.
+    - Image quality and weight consistency carry 10% each as supporting evidence.
+  In production, weights are calibrated from labelled historical data via
+  logistic regression or precision/recall optimisation on a confirmed fraud dataset.
+  Higher recall weight is applied to the REJECTED class — missing a fraudulent
+  submission carries greater regulatory cost than a false HITL flag.
 """
 
 from __future__ import annotations
@@ -18,6 +38,8 @@ from config import (
     DISMANTLED_WEIGHTS,
     TRUST_SCORE_AUTO_VERIFIED_MIN,
     TRUST_SCORE_HITL_MIN,
+    VETO_FACILITY_MIN,
+    VETO_GPS_MIN,
     STATUS_AUTO_VERIFIED,
     STATUS_HITL,
     STATUS_REJECTED,
@@ -27,10 +49,10 @@ from config import (
 @dataclass
 class ScoreComponent:
     """A single weighted component of the Trust Score."""
-    label:       str
-    raw_value:   float   # 0.0 – 1.0
-    weight:      float   # 0.0 – 1.0
-    contribution: float  # raw_value × weight
+    label:        str
+    raw_value:    float   # 0.0 – 1.0
+    weight:       float   # 0.0 – 1.0
+    contribution: float   # raw_value × weight
 
     @property
     def weight_pct(self) -> str:
@@ -44,10 +66,15 @@ class ScoreComponent:
 @dataclass
 class TrustScoreResult:
     """Full result returned from any calculate_*_score() call."""
-    mode:         str                        # "INTACT" or "DISMANTLED"
-    score:        float                      # final weighted score
-    status:       str                        # AUTO-VERIFIED / HITL REVIEW / REJECTED
-    components:   list[ScoreComponent] = field(default_factory=list)
+    mode:        str                         # "INTACT" or "DISMANTLED"
+    score:       float                       # final weighted score (0.0 if vetoed)
+    status:      str                         # AUTO-VERIFIED / HITL REVIEW / REJECTED
+    components:  list[ScoreComponent] = field(default_factory=list)
+    veto_reason: str | None = None           # set if a hard veto fired
+
+    @property
+    def vetoed(self) -> bool:
+        return self.veto_reason is not None
 
     @property
     def score_pct(self) -> str:
@@ -66,23 +93,65 @@ def get_score_status(score: float) -> str:
         return STATUS_REJECTED
 
 
+# ── Hard veto check ───────────────────────────────────────────────────────────
+
+def _check_veto(
+    facility_validity: float,
+    gps_validity: float,
+    mode: str,
+) -> str | None:
+    """
+    Check hard veto conditions before weighted scoring.
+
+    Returns a veto reason string if any condition fails, else None.
+
+    These are binary compliance gates — not evidence quality indicators.
+    An unregistered facility or invalid GPS cannot be compensated by
+    strong performance on other metrics.
+    """
+    if _clamp(facility_validity) < VETO_FACILITY_MIN:
+        return (
+            f"VETO: Facility validity {facility_validity:.2f} is below the "
+            f"minimum threshold ({VETO_FACILITY_MIN}). "
+            f"Unregistered or suspended facilities are disqualifying. "
+            f"Score set to 0.0 regardless of other evidence."
+        )
+    if _clamp(gps_validity) < VETO_GPS_MIN:
+        return (
+            f"VETO: GPS validity {gps_validity:.2f} is below the "
+            f"minimum threshold ({VETO_GPS_MIN}). "
+            f"Invalid or spoofed coordinates are disqualifying. "
+            f"Score set to 0.0 regardless of other evidence."
+        )
+    return None
+
+
 # ── Intact mode ───────────────────────────────────────────────────────────────
 
 def calculate_intact_score(
-    ocr_confidence:    float,
-    serial_uniqueness: float,
-    facility_validity: float,
-    gps_validity:      float,
-    image_quality:     float,
+    ocr_confidence:     float,
+    serial_uniqueness:  float,
+    facility_validity:  float,
+    gps_validity:       float,
+    image_quality:      float,
     weight_consistency: float,
 ) -> TrustScoreResult:
     """
     Calculate Trust Score for an INTACT item (serial/OCR identity).
-
     All inputs must be in [0.0, 1.0].
+    Hard veto is applied before weighted sum.
     """
-    w = INTACT_WEIGHTS
+    veto = _check_veto(facility_validity, gps_validity, mode="INTACT")
+    if veto:
+        return TrustScoreResult(
+            mode="INTACT",
+            score=0.0,
+            status=STATUS_REJECTED,
+            components=[],
+            veto_reason=veto,
+        )
 
+    w = INTACT_WEIGHTS
     components = [
         ScoreComponent(
             label="Serial / IMEI OCR Confidence",
@@ -121,10 +190,7 @@ def calculate_intact_score(
             contribution=_clamp(weight_consistency) * w["weight_consistency"],
         ),
     ]
-
-    total = sum(c.contribution for c in components)
-    total = round(_clamp(total), 4)
-
+    total = round(_clamp(sum(c.contribution for c in components)), 4)
     return TrustScoreResult(
         mode="INTACT",
         score=total,
@@ -145,13 +211,21 @@ def calculate_dismantled_score(
 ) -> TrustScoreResult:
     """
     Calculate Trust Score for a DISMANTLED item (component CV identity).
-
     All inputs must be in [0.0, 1.0].
-    Serial/IMEI absence does NOT penalise the score — the item was
-    already dismantled at first capture; component evidence is used instead.
+    Serial/IMEI absence does NOT penalise the score.
+    Hard veto is applied before weighted sum.
     """
-    w = DISMANTLED_WEIGHTS
+    veto = _check_veto(facility_validity, gps_validity, mode="DISMANTLED")
+    if veto:
+        return TrustScoreResult(
+            mode="DISMANTLED",
+            score=0.0,
+            status=STATUS_REJECTED,
+            components=[],
+            veto_reason=veto,
+        )
 
+    w = DISMANTLED_WEIGHTS
     components = [
         ScoreComponent(
             label="Component Classification Confidence",
@@ -190,10 +264,7 @@ def calculate_dismantled_score(
             contribution=_clamp(weight_consistency) * w["weight_consistency"],
         ),
     ]
-
-    total = sum(c.contribution for c in components)
-    total = round(_clamp(total), 4)
-
+    total = round(_clamp(sum(c.contribution for c in components)), 4)
     return TrustScoreResult(
         mode="DISMANTLED",
         score=total,
@@ -207,17 +278,8 @@ def calculate_dismantled_score(
 def calculate_score_from_params(params: dict) -> TrustScoreResult:
     """
     Dispatch to the correct mode based on params["item_state"].
-
-    params keys (dismantled):
-        item_state, component_confidence, material_plausibility,
-        facility_validity, gps_validity, image_quality, weight_consistency
-
-    params keys (intact):
-        item_state, ocr_confidence, serial_uniqueness,
-        facility_validity, gps_validity, image_quality, weight_consistency
     """
     state = params.get("item_state", "dismantled").lower()
-
     if state == "intact":
         return calculate_intact_score(
             ocr_confidence=params.get("ocr_confidence", 0.92),
