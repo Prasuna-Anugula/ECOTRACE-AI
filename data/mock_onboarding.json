@@ -1,0 +1,104 @@
+{
+  "registered_producers": [
+    {
+      "producer_id": "PROD-001",
+      "company_name": "Apple India Pvt Ltd",
+      "registration_number": "CPCB-PRD-2021-00101",
+      "registration_date": "2021-04-01",
+      "contact_email": "epr@apple.in",
+      "contact_person": "Arjun Sharma",
+      "products": [
+        {"category": "Mobile", "units_sold_per_year": 4200000, "avg_weight_kg": 0.18},
+        {"category": "Laptop", "units_sold_per_year": 850000,  "avg_weight_kg": 1.60},
+        {"category": "Tablet", "units_sold_per_year": 620000,  "avg_weight_kg": 0.47}
+      ],
+      "total_placed_on_market_kg": 2236400,
+      "epr_rate_percent": 30,
+      "annual_obligation_kg": 50000,
+      "compliance_year": 2026,
+      "deadline": "2026-12-31",
+      "status": "ACTIVE"
+    },
+    {
+      "producer_id": "PROD-002",
+      "company_name": "Samsung India Electronics Pvt Ltd",
+      "registration_number": "CPCB-PRD-2021-00142",
+      "registration_date": "2021-03-15",
+      "contact_email": "epr@samsung.in",
+      "contact_person": "Priya Nair",
+      "products": [
+        {"category": "Mobile",         "units_sold_per_year": 9500000, "avg_weight_kg": 0.19},
+        {"category": "Television",     "units_sold_per_year": 1200000, "avg_weight_kg": 8.50},
+        {"category": "Washing Machine","units_sold_per_year": 680000,  "avg_weight_kg": 52.0},
+        {"category": "Laptop",         "units_sold_per_year": 540000,  "avg_weight_kg": 1.70}
+      ],
+      "total_placed_on_market_kg": 37920000,
+      "epr_rate_percent": 30,
+      "annual_obligation_kg": 75000,
+      "compliance_year": 2026,
+      "deadline": "2026-12-31",
+      "status": "ACTIVE"
+    },
+    {
+      "producer_id": "PROD-003",
+      "company_name": "Dell India Pvt Ltd",
+      "registration_number": "CPCB-PRD-2020-00089",
+      "registration_date": "2020-09-01",
+      "contact_email": "epr@dell.in",
+      "contact_person": "Rahul Menon",
+      "products": [
+        {"category": "Laptop",  "units_sold_per_year": 1100000, "avg_weight_kg": 1.80},
+        {"category": "Desktop", "units_sold_per_year": 320000,  "avg_weight_kg": 7.50},
+        {"category": "Monitor", "units_sold_per_year": 480000,  "avg_weight_kg": 4.20},
+        {"category": "Printer", "units_sold_per_year": 210000,  "avg_weight_kg": 6.80}
+      ],
+      "total_placed_on_market_kg": 5982000,
+      "epr_rate_percent": 30,
+      "annual_obligation_kg": 30000,
+      "compliance_year": 2026,
+      "deadline": "2026-12-31",
+      "status": "ACTIVE"
+    }
+  ],
+  "registered_recyclers": [
+    {
+      "recycler_id": "REC-001",
+      "company_name": "GreenCycle Technologies Pvt Ltd",
+      "registration_number": "CPCB-EPR-2022-00451",
+      "registration_date": "2022-01-10",
+      "contact_email": "compliance@greencycletech.in",
+      "contact_person": "Vikram Reddy",
+      "facility_count": 2,
+      "total_capacity_tpm": 70,
+      "item_types_handled": ["PCB", "Battery", "Mobile", "Laptop", "Tablet"],
+      "annual_target_credits_kg": 84000,
+      "status": "ACTIVE"
+    },
+    {
+      "recycler_id": "REC-002",
+      "company_name": "EcoWaste Solutions Pvt Ltd",
+      "registration_number": "CPCB-EPR-2020-00189",
+      "registration_date": "2020-05-20",
+      "contact_email": "epr@ecowastesolutions.in",
+      "contact_person": "Suresh Pillai",
+      "facility_count": 2,
+      "total_capacity_tpm": 115,
+      "item_types_handled": ["PCB", "Battery", "Television", "Washing Machine", "Desktop"],
+      "annual_target_credits_kg": 138000,
+      "status": "ACTIVE"
+    },
+    {
+      "recycler_id": "REC-004",
+      "company_name": "SafeRecycle India Pvt Ltd",
+      "registration_number": "CPCB-EPR-2019-00098",
+      "registration_date": "2019-02-15",
+      "contact_email": "epr@saferecycleindia.in",
+      "contact_person": "Ananya Krishnan",
+      "facility_count": 2,
+      "total_capacity_tpm": 210,
+      "item_types_handled": ["PCB", "Battery", "Mobile", "Laptop", "Television", "Server"],
+      "annual_target_credits_kg": 252000,
+      "status": "ACTIVE"
+    }
+  ]
+}

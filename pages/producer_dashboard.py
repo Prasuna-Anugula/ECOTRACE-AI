@@ -1,228 +1,252 @@
 """
-EcoTrace AI — Producer Compliance Dashboard
-─────────────────────────────────────────────
-Shows a producer's EPR obligation progress, purchased credits,
-and recycler partner summary.
+EcoTrace AI — Producer Compliance Dashboard (upgraded)
+────────────────────────────────────────────────────────
+Shows full EPR compliance status:
+  - Obligation vs fulfilled with deadline countdown
+  - Shortfall alert with urgency colour coding
+  - Purchase history (credits bought)
+  - Recommended basket from marketplace
+  - Partner recycler summary
+
+NO display:flex/grid. All layout via st.columns() and <table>.
 """
 
 from __future__ import annotations
 import streamlit as st
 import plotly.graph_objects as go
-from services.recycler_trust import get_producers, get_all_recyclers
+from services.credit_ledger import (
+    get_all_producers,
+    get_producer_obligation,
+    recommend_basket,
+    get_credits_for_producer,
+)
+from services.recycler_trust import get_all_recyclers
 
 
-def _obligation_gauge(purchased: float, target: float) -> go.Figure:
-    pct = min((purchased / target) * 100, 100) if target else 0
-    color = "#16a34a" if pct >= 80 else "#d97706" if pct >= 50 else "#dc2626"
+# ── helpers ───────────────────────────────────────────────────────────────────
+
+def _gauge(pct: float, label: str, colour: str) -> go.Figure:
     fig = go.Figure(go.Indicator(
-        mode="gauge+number+delta",
+        mode="gauge+number",
         value=round(pct, 1),
-        number={"suffix": "%", "font": {"size": 32, "color": color}},
-        delta={"reference": 80, "valueformat": ".1f", "suffix": "%"},
-        title={"text": "EPR Obligation Progress", "font": {"size": 12}},
+        number={"suffix": "%", "font": {"size": 30, "color": colour}},
+        title={"text": label, "font": {"size": 11, "color": "#6b7280"}},
         gauge={
             "axis": {"range": [0, 100], "ticksuffix": "%"},
-            "bar": {"color": color, "thickness": 0.3},
+            "bar":  {"color": colour, "thickness": 0.28},
             "bgcolor": "#f8fafc",
             "borderwidth": 0,
             "steps": [
-                {"range": [0, 50],   "color": "#fef2f2"},
-                {"range": [50, 80],  "color": "#fffbeb"},
-                {"range": [80, 100], "color": "#f0fdf4"},
+                {"range": [0,  30], "color": "#fef2f2"},
+                {"range": [30, 60], "color": "#fffbeb"},
+                {"range": [60, 80], "color": "#eff6ff"},
+                {"range": [80, 100],"color": "#f0fdf4"},
             ],
             "threshold": {
-                "line": {"color": "#374151", "width": 3},
-                "thickness": 0.75,
-                "value": 80,
+                "line": {"color": "#374151", "width": 2},
+                "thickness": 0.75, "value": 80,
             },
         },
     ))
     fig.update_layout(
-        height=250,
-        margin=dict(t=20, b=10, l=20, r=20),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        height=230, margin=dict(t=20, b=10, l=10, r=10),
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
     )
     return fig
 
 
-def render_producer_dashboard() -> None:
-    st.markdown(
-        """
-        <div style="margin-bottom:20px;">
-            <div style="font-size:22px;font-weight:900;color:#111827;">
-                Producer Compliance Dashboard
-            </div>
-            <div style="font-size:13px;color:#6b7280;margin-top:3px;">
-                Track your EPR obligation progress and purchased certificate status.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+STATUS_META = {
+    "COMPLIANT": {"color": "#166534", "bg": "#f0fdf4", "border": "#bbf7d0", "icon": "✓"},
+    "ON_TRACK":  {"color": "#1d4ed8", "bg": "#eff6ff", "border": "#93c5fd", "icon": "→"},
+    "AT_RISK":   {"color": "#d97706", "bg": "#fffbeb", "border": "#fcd34d", "icon": "⚠"},
+    "CRITICAL":  {"color": "#dc2626", "bg": "#fef2f2", "border": "#fca5a5", "icon": "!"},
+}
 
-    producers = get_producers()
+
+# ── main ──────────────────────────────────────────────────────────────────────
+
+def render_producer_dashboard() -> None:
+    st.markdown("## Producer Compliance Dashboard")
+    st.caption("Track your EPR obligation, purchased credits, shortfall, and deadline risk.")
+
+    producers = get_all_producers()
     if not producers:
         st.info("No producer data available.")
         return
 
-    # Producer selector
-    producer_names = [p["company_name"] for p in producers]
-    selected_name  = st.selectbox("Select Producer Account", producer_names, key="prod_selector")
-    prod = next(p for p in producers if p["company_name"] == selected_name)
+    names      = [p["company_name"] for p in producers]
+    sel_name   = st.selectbox("Select Producer Account", names, key="prod_sel")
+    prod_rec   = next(p for p in producers if p["company_name"] == sel_name)
+    prod_id    = prod_rec["producer_id"]
+    obl        = get_producer_obligation(prod_id)
 
-    target    = prod.get("annual_target_kg", 0)
-    purchased = prod.get("purchased_credits_kg", 0)
-    verified  = prod.get("verified_credits_kg", 0)
-    remaining = max(target - purchased, 0)
-    pct_done  = (purchased / target * 100) if target else 0
-    status    = prod.get("compliance_status", "UNKNOWN")
-    deadline  = prod.get("deadline", "2026-12-31")
+    if not obl:
+        st.warning("No obligation data found.")
+        return
 
-    status_color = "#166534" if status == "ON_TRACK" else "#dc2626" if status == "AT_RISK" else "#d97706"
-    status_bg    = "#f0fdf4" if status == "ON_TRACK" else "#fef2f2" if status == "AT_RISK" else "#fffbeb"
+    status     = obl["status"]
+    sm         = STATUS_META.get(status, STATUS_META["AT_RISK"])
+    pct        = obl["pct_done"]
+    days_left  = obl["days_left"]
+    shortfall  = obl["shortfall_kg"]
 
-    # Status banner
+    # ── Status banner ──────────────────────────────────────────────────────
+    days_color = "#dc2626" if days_left < 30 else "#d97706" if days_left < 90 else "#166534"
     st.markdown(
-        f'<div style="background:{status_bg};border:1.5px solid {status_color}33;'
-        f'border-radius:10px;padding:12px 18px;margin-bottom:16px;">'
-        f'<table style="width:100%;border-collapse:collapse;">'
-        f'<tr>'
+        f'<div style="background:{sm["bg"]};border:1.5px solid {sm["border"]};'
+        f'border-radius:12px;padding:14px 20px;margin-bottom:16px;">'
+        f'<table style="width:100%;border-collapse:collapse;"><tr>'
         f'<td style="vertical-align:top;">'
-        f'<div style="font-size:16px;font-weight:800;color:#111827;">'
-        f'{prod.get("company_name","")}</div>'
-        f'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'
-        f'Reg: {prod.get("registration_number","")} &nbsp;|&nbsp; '
-        f'Deadline: {deadline} &nbsp;|&nbsp; '
-        f'Categories: {", ".join(prod.get("product_categories",[]))}'
+        f'<div style="font-size:18px;font-weight:900;color:#111827;">{sel_name}</div>'
+        f'<div style="font-size:12px;color:#6b7280;margin-top:2px;">'
+        f'Reg: {prod_rec["registration_number"]} &nbsp;|&nbsp; '
+        f'Deadline: {prod_rec["deadline"]} &nbsp;|&nbsp; '
+        f'Year: {prod_rec["compliance_year"]}'
         f'</div></td>'
-        f'<td style="text-align:right;vertical-align:top;width:160px;">'
-        f'<div style="background:{status_bg};border:2px solid {status_color};'
-        f'border-radius:8px;padding:6px 16px;display:inline-block;">'
-        f'<div style="font-size:13px;font-weight:800;color:{status_color};">'
-        f'{"OK" if status=="ON_TRACK" else "RISK"} {status.replace("_"," ")}'
-        f'</div></div></td>'
-        f'</tr></table>'
+        f'<td style="text-align:right;vertical-align:top;width:220px;">'
+        f'<div style="font-size:13px;font-weight:800;color:{sm["color"]};">'
+        f'{sm["icon"]} {status.replace("_"," ")}</div>'
+        f'<div style="font-size:26px;font-weight:900;color:{days_color};">'
+        f'{days_left} days left</div>'
+        f'<div style="font-size:10px;color:#6b7280;">until compliance deadline</div>'
+        f'</td></tr></table>'
         f'</div>',
         unsafe_allow_html=True,
     )
 
-    # Gauge + KPIs
+    # ── KPIs ───────────────────────────────────────────────────────────────
     g_col, k_col = st.columns([1, 2])
-
     with g_col:
         st.plotly_chart(
-            _obligation_gauge(purchased, target),
-            use_container_width=True,
-            config={"displayModeBar": False},
+            _gauge(pct, "Obligation Fulfilled", sm["color"]),
+            use_container_width=True, config={"displayModeBar": False},
         )
-
     with k_col:
-        k1, k2 = st.columns(2)
-        k3, k4 = st.columns(2)
-        with k1:
-            st.metric("Annual Target", f"{target:,} kg")
-        with k2:
-            st.metric("Purchased Credits", f"{purchased:,} kg", delta=f"{pct_done:.1f}% of target")
-        with k3:
-            st.metric("Verified Credits", f"{verified:,} kg",
-                      delta=f"{((verified/purchased)*100 if purchased else 0):.1f}% verified")
-        with k4:
-            st.metric(
-                "Still Needed",
-                f"{remaining:,} kg",
-                delta=f"{'At risk' if remaining > 10000 else 'Manageable'}",
-                delta_color="inverse",
-            )
+        r1c1, r1c2 = st.columns(2)
+        r2c1, r2c2 = st.columns(2)
+        with r1c1:
+            st.metric("Annual Obligation",  f"{obl['obligation_kg']/1000:,.1f} t  ({obl['obligation_kg']:,.0f} kg)")
+        with r1c2:
+            st.metric("Fulfilled",          f"{obl['fulfilled_kg']/1000:,.1f} t", delta=f"{pct:.1f}% of target")
+        with r2c1:
+            st.metric("Shortfall",          f"{shortfall/1000:,.1f} t  ({shortfall:,.0f} kg)",
+                      delta="Action required" if shortfall > 0 else "Fully covered",
+                      delta_color="inverse" if shortfall > 0 else "normal")
+        with r2c2:
+            st.metric("Days to Deadline",   str(days_left),
+                      delta="Critical" if days_left < 30 else "At risk" if days_left < 90 else "OK",
+                      delta_color="inverse" if days_left < 90 else "normal")
 
     # Progress bar
-    bar_color = "#16a34a" if pct_done >= 80 else "#d97706" if pct_done >= 50 else "#dc2626"
+    bar_color = sm["color"]
     st.markdown(
-        f"""
-        <div style="margin:8px 0 16px 0;">
-            <div style="display:flex;justify-content:space-between;
-                        font-size:12px;color:#374151;margin-bottom:4px;">
-                <span style="font-weight:600;">Overall EPR Progress</span>
-                <span style="font-weight:800;color:{bar_color};">
-                    {purchased:,} / {target:,} kg ({pct_done:.1f}%)
-                </span>
-            </div>
-            <div style="background:#e5e7eb;border-radius:6px;height:10px;">
-                <div style="background:{bar_color};width:{min(pct_done,100):.1f}%;
-                            height:10px;border-radius:6px;"></div>
-            </div>
-        </div>
-        """,
+        f'<div style="margin:8px 0 16px 0;">'
+        f'<table style="width:100%;border-collapse:collapse;"><tr>'
+        f'<td style="font-size:12px;font-weight:600;color:#374151;">Obligation Progress</td>'
+        f'<td style="text-align:right;font-size:12px;font-weight:800;color:{bar_color};">'
+        f'{obl["fulfilled_kg"]:,.0f} / {obl["obligation_kg"]:,.0f} kg ({pct:.1f}%)</td>'
+        f'</tr></table>'
+        f'<div style="background:#e5e7eb;border-radius:6px;height:10px;margin-top:4px;">'
+        f'<div style="background:{bar_color};width:{min(pct,100):.1f}%;height:10px;border-radius:6px;"></div>'
+        f'</div></div>',
         unsafe_allow_html=True,
     )
 
-    # Verified recycler partners
-    st.markdown("#### Verified Recycler Partners")
+    # ── Shortfall alert + basket recommendation ────────────────────────────
+    if shortfall > 0:
+        basket = recommend_basket(remaining_kg=shortfall, min_trust=0.85, producer_id=prod_id)
+        f_color  = "#166534" if basket["can_fulfil"] else "#dc2626"
+        f_bg     = "#f0fdf4" if basket["can_fulfil"] else "#fef2f2"
+        f_border = "#bbf7d0" if basket["can_fulfil"] else "#fca5a5"
+        f_label  = "RECOMMENDED BASKET — OBLIGATION CAN BE FULFILLED" if basket["can_fulfil"] \
+                   else "INSUFFICIENT SUPPLY — CREDITS BELOW REQUIRED"
+
+        st.markdown("#### Recommended Purchase Basket")
+        st.markdown(
+            f'<div style="background:{f_bg};border:1.5px solid {f_border};'
+            f'border-radius:10px;padding:14px 18px;margin-bottom:12px;">'
+            f'<div style="font-size:13px;font-weight:800;color:{f_color};">{f_label}</div>'
+            f'<div style="font-size:11px;color:#6b7280;margin-top:4px;">'
+            f'Shortfall: <strong>{shortfall/1000:,.2f} t ({shortfall:,.0f} kg)</strong> &nbsp;&bull;&nbsp; '
+            f'Covered by basket: <strong>{basket["total_covered"]/1000:,.2f} t</strong> &nbsp;&bull;&nbsp; '
+            f'Est. total cost: <strong>&#8377;{basket["total_cost"]:,.0f}</strong>'
+            f'</div></div>',
+            unsafe_allow_html=True,
+        )
+
+        if basket["basket"]:
+            hdr = st.columns([2.5, 1.2, 1.2, 1.2, 1.5, 1.5])
+            for col, h in zip(hdr, ["Recycler", "Trust", "Gate Pass", "Buy (kg)", "Price/kg", "Cost (₹)"]):
+                with col:
+                    st.markdown(
+                        f'<div style="font-size:11px;font-weight:700;color:#374151;'
+                        f'padding:6px 0;border-bottom:2px solid #e5e7eb;">{h}</div>',
+                        unsafe_allow_html=True,
+                    )
+            for item in basket["basket"]:
+                ts_c = "#16a34a" if item["trust_score"] >= 0.85 else "#2563eb"
+                bc   = st.columns([2.5, 1.2, 1.2, 1.2, 1.5, 1.5])
+                vals = [
+                    item["company_name"],
+                    f"{int(item['trust_score']*100)}%",
+                    f"{int(item['gate_pass_rate']*100)}%",
+                    f"{item['to_buy_kg']:,.1f}",
+                    f"₹{item['price_per_kg']}",
+                    f"₹{item['cost_inr']:,.0f}",
+                ]
+                colors = ["#111827", ts_c, "#374151", "#111827", "#374151", "#111827"]
+                for col, v, c in zip(bc, vals, colors):
+                    with col:
+                        st.markdown(
+                            f'<div style="font-size:12px;font-weight:600;color:{c};padding:5px 0;">{v}</div>',
+                            unsafe_allow_html=True,
+                        )
+
+        act1, act2 = st.columns(2)
+        with act1:
+            if st.button("Go to Marketplace →", type="primary", use_container_width=True):
+                st.session_state["current_page"] = "EPR Marketplace"
+                st.rerun()
+        with act2:
+            st.button("Download Compliance Report", use_container_width=True,
+                      disabled=True, help="Available in production version")
+
+    # ── Purchase history ───────────────────────────────────────────────────
+    st.markdown("#### Purchase History")
+    credits = get_credits_for_producer(prod_id)
+    if credits:
+        h = st.columns([1.8, 1.4, 1.0, 1.0, 1.0, 1.4])
+        for col, label in zip(h, ["Credit ID", "Recycler", "Item", "kg", "Paid ₹", "Status"]):
+            with col:
+                st.markdown(
+                    f'<div style="font-size:11px;font-weight:700;color:#374151;'
+                    f'padding:6px 0;border-bottom:2px solid #e5e7eb;">{label}</div>',
+                    unsafe_allow_html=True,
+                )
+        for c in credits:
+            row = st.columns([1.8, 1.4, 1.0, 1.0, 1.0, 1.4])
+            vals = [
+                c["credit_id"],
+                c["recycler_name"].split()[0],
+                c["item_type"],
+                str(c["credit_kg"]),
+                f"₹{c['sale_price_inr']:,.0f}" if c.get("sale_price_inr") else "—",
+                c["status"],
+            ]
+            for col, v in zip(row, vals):
+                with col:
+                    st.markdown(
+                        f'<div style="font-size:11px;padding:5px 0;'
+                        f'border-bottom:1px solid #f3f4f6;">{v}</div>',
+                        unsafe_allow_html=True,
+                    )
+    else:
+        st.info("No purchased credits on record for this producer.")
+
     st.markdown(
-        """
-        <div style="font-size:11px;color:#6b7280;margin-bottom:10px;">
-            Recyclers from whom this producer has purchased EPR certificates.
-            Trust scores reflect EcoTrace verification data at time of purchase.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Show top recyclers from marketplace (first 3 recommended ones as mock partners)
-    partners = get_all_recyclers(min_trust=0.85, sort_by="trust_score")[:3]
-
-    hdr = st.columns([2.5, 1.2, 1.2, 1.2, 1.2, 1.5])
-    for col, h in zip(hdr, ["Recycler", "Trust Score", "Gate Pass", "Credits Purchased", "Verified", "Status"]):
-        with col:
-            st.markdown(
-                f'<div style="font-size:11px;font-weight:700;color:#374151;'
-                f'padding:6px 0;border-bottom:2px solid #e5e7eb;">{h}</div>',
-                unsafe_allow_html=True,
-            )
-
-    for p in partners:
-        ts  = p.get("trust_score", 0)
-        gpr = p.get("gate_pass_rate", 0)
-        ts_c = "#16a34a" if ts >= 0.85 else "#2563eb" if ts >= 0.70 else "#dc2626"
-        mock_purchased = round(purchased * 0.35, 0) if partners.index(p) == 0 else \
-                         round(purchased * 0.25, 0) if partners.index(p) == 1 else \
-                         round(purchased * 0.15, 0)
-        mock_verified  = round(mock_purchased * 0.985, 0)
-
-        pc1, pc2, pc3, pc4, pc5, pc6 = st.columns([2.5, 1.2, 1.2, 1.2, 1.2, 1.5])
-        with pc1:
-            st.markdown(f"<div style='font-size:12px;font-weight:600;padding:5px 0;'>{p.get('company_name','')}</div>", unsafe_allow_html=True)
-        with pc2:
-            st.markdown(f"<div style='font-size:12px;color:{ts_c};font-weight:700;padding:5px 0;'>{int(ts*100)}%</div>", unsafe_allow_html=True)
-        with pc3:
-            st.markdown(f"<div style='font-size:12px;font-weight:700;padding:5px 0;'>{int(gpr*100)}%</div>", unsafe_allow_html=True)
-        with pc4:
-            st.markdown(f"<div style='font-size:12px;padding:5px 0;'>{mock_purchased:,.0f} kg</div>", unsafe_allow_html=True)
-        with pc5:
-            st.markdown(f"<div style='font-size:12px;padding:5px 0;'>{mock_verified:,.0f} kg</div>", unsafe_allow_html=True)
-        with pc6:
-            st.markdown(f"<div style='font-size:12px;color:#16a34a;font-weight:700;padding:5px 0;'>✅ Verified</div>", unsafe_allow_html=True)
-
-    # Action buttons
-    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-    b1, b2 = st.columns(2)
-    with b1:
-        if st.button("🔍 Search Marketplace for More Credits", use_container_width=True, type="primary"):
-            st.session_state["current_page"] = "EPR Marketplace"
-            st.rerun()
-    with b2:
-        st.button("📥 Download Compliance Report (PDF)", use_container_width=True, disabled=True,
-                  help="Available in production version")
-
-    st.markdown(
-        """
-        <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;
-                    padding:10px 16px;margin-top:16px;">
-            <div style="font-size:11px;color:#9ca3af;">
-                <strong>Prototype Notice:</strong> Producer data, purchased credit figures,
-                and partner lists are synthetic examples for demonstration only.
-            </div>
-        </div>
-        """,
+        '<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;'
+        'padding:10px 16px;margin-top:16px;font-size:11px;color:#9ca3af;">'
+        '<strong>Prototype Notice:</strong> All obligation figures, credit data, and '
+        'purchase history are synthetic examples only.</div>',
         unsafe_allow_html=True,
     )
